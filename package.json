@@ -1,0 +1,21 @@
+{
+  "name": "node-ngrok",
+  "version": "1.0.0",
+  "description": "remake functionality of ngrok. Including server and client.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "YJ Cheng",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "commander": "^2.14.1",
+    "http-proxy": "^1.16.2",
+    "http-string-parser": "0.0.6",
+    "ioredis": "^3.2.2",
+    "parse-raw-http": "0.0.1",
+    "tunnel": "0.0.5",
+    "websocket-stream": "^5.1.1",
+    "ws": "^4.0.0"
+  }
+}
