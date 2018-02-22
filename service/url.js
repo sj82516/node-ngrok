@@ -24,7 +24,7 @@ class Url {
             // 檢查是否碰撞
             let existsUrl = this.getUrl(name);
             if (existsUrl) {
-                throw Error("UrlsExists");
+                throw Error("UrlExists");
             }
 
             this.model.register(name, socket);

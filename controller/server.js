@@ -4,6 +4,8 @@ const http = require("http")
 const path = require("path")
 const parser = require('http-string-parser')
 
+const config = require("../config/server");
+const error = require("../util/error");
 let urlService = require("../service/url");
 urlService = new urlService();
 
@@ -27,23 +29,21 @@ const netServer = net.createServer(function (socket) {
         // socket.pipe(stream).on("error", handleError);
         stream.pipe(socket).on("error", handleError);
     })
-    
-}).listen(80, function () {
-    console.log("netServer listen 80")
+}).listen(config.externalPort, function () {
+    console.log("netServer listen " + config.externalPort)
 });
 netServer.on("error", handleError);
 
 // httpServer for ngrok client to connect
 const httpServer = http.createServer((req, res) => {
     // nothing to handle here
-}).listen(8000, function () {
-    console.log("httpServer listen 8000");
+}).listen(config.internalPort, function () {
+    console.log("httpServer listen " + config.internalPort);
 });
 
 // when ngrok client initially connect to ngrok-server, 
 // ngrok-server would save ngrok-client websocket stream and correspoding url-key.
 function handle(stream, request) {
-    console.log("stream connect");
     stream.on("data", (rawData)=>{
         try{
             let data = JSON.parse(rawData);
@@ -52,12 +52,18 @@ function handle(stream, request) {
                     let registerName = urlService.register(data.message, stream)
                     stream.write(JSON.stringify({
                         type: "register_ok",
-                        message: registerName
+                        message: `${registerName}.${config.domainName}`
                     }))
                     break;
             }
         }catch(error){
             console.error(error)
+            if(error && error.hasOwnProperty(error)){
+                stream.write(JSON.stringify({
+                    type: "error",
+                    message: `${error[error]}`
+                }))
+            }
         }
     })
 }

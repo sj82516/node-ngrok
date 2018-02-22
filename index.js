@@ -1,29 +1,37 @@
 #!/usr/bin/env node
 
+// This shell script only to execute ngrok-client.
 var program = require("commander");
+var ngrokClient = require("./controller/client");
+const {
+    URL
+} = require('url');
 
 program
-    .version("0.0.1")
-    .command("<role>")
-    .option("-d, --domain-name [domain-name]")
+    .version("0.0.1", '-v, --version')
     .option("-h, --host [host]")
-    .option("-e, --external-port [external-port]")
     .option("-i, --internal-port [internal-port]")
     .option("-s, --subdomain-name [subdomain-name]")
-    .action((role, options) => {
-        console.log(options)
-        if (role == "server") {
-            if (!options["domain-name"]) {
-                console.error('server must set domain-name!');
-                process.exit(1);
-            }
-            global.config = {
-                domainName: options["domain-name"],
-                externalPort: options["external-port"] || 80,
-                internalPort: options["internal-port"] || 8080,
-            }
-        } else if (role == "client") {
-
-        }
-    })
+    .command('install [name]', 'install one or more packages')
     .parse(process.argv);
+
+let host = "";
+if (!program.host) {
+    return console.log("please input your ngrok-server hostname");
+} else {
+    try {
+        host = new URL(program.host);
+        console.log(`ngrok-client would connect to ${host.host}`)
+    } catch (error) {
+        if(error && error.code === "ERR_INVALID_URL"){
+            return console.error("host url is invalid");
+        }
+    }
+}
+
+if (!program.internalPort) {
+    return console.log("please input your internal port to listen by -i ...");
+}
+
+console.log("ngrok-client initiate ......");
+ngrokClient(host.host, program.internalPort, program.subdomainName)

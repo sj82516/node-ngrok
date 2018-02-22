@@ -4,7 +4,9 @@
   "description": "remake functionality of ngrok. Including server and client.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "node controller/server.js &",
+    "client": "node controller/client.js"
   },
   "author": "YJ Cheng",
   "license": "BSD-2-Clause",
